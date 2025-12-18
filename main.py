@@ -1,47 +1,84 @@
 import streamlit as st
-import os
 import time
+import os
 
-# 1. Pro Config
-st.set_page_config(page_title="VIP Exclusive", page_icon="💎", layout="centered")
+# 1. Professional Page Config
+st.set_page_config(page_title="VIP Access Portal", page_icon="💎", layout="centered")
 
-# 2. Sleek Pro Styles
+# 2. Professional CSS (Dark Mode + Logo Pop-up)
 st.markdown("""
     <style>
-    .stApp { background-color: #0a0a0a; color: white; }
+    /* Sleek Dark Mode Background */
+    .stApp {
+        background-color: #0e1117;
+        color: #ffffff;
+    }
+    
+    /* Logo Pop-up Animation */
+    @keyframes popup {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        animation: popup 0.8s ease-out;
+    }
+    
+    /* Premium Button Style */
     div.stButton > button:first-child {
         background: linear-gradient(45deg, #FF4B2B, #FF416C);
-        color: white; border-radius: 25px; width: 100%; height: 3.5em;
-        font-weight: bold; font-size: 20px; border: none;
+        color: white;
+        border-radius: 30px;
+        width: 100%;
+        height: 3.5em;
+        font-weight: bold;
+        font-size: 20px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+        transition: all 0.3s ease;
+    }
+    div.stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Logo & Brand
-all_files = os.listdir('.')
-images = [f for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+# 3. Logo Display (Pop-up effect)
+st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+files = os.listdir('.')
+images = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 if images:
+    # This automatically finds your logo file in the repository
     st.image(images[0], width=180)
+st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center;'>👑 VIP PORTAL</h1>", unsafe_allow_html=True)
+# 4. Title and Content
+st.markdown("<h1 style='text-align: center; color: white;'>👑 PREMIUM MASTERCLASS</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #888;'>Secure your spot to unlock the exclusive content.</p>", unsafe_allow_html=True)
 
-# 4. Placeholder Link (We will change this to your PayPal later!)
-TEMP_PAYMENT_LINK = "https://www.google.com" 
+# 5. Payment Logic
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
 
-if 'paid' not in st.session_state:
-    st.session_state.paid = False
-
-if not st.session_state.paid:
-    st.link_button("🚀 UNLOCK VIDEO - $5", TEMP_PAYMENT_LINK)
-    st.write(" ")
-    if st.button("✅ I HAVE PAID (VERIFY)"):
-        with st.spinner('Verifying transaction...'):
-            time.sleep(2) # Makes it look like it's actually checking!
-        st.session_state.paid = True
+if not st.session_state.authenticated:
+    st.write("---")
+    st.link_button("🚀 UNLOCK INSTANT ACCESS - $5", "https://www.paypal.com")
+    
+    if st.button("✅ I HAVE PAID (CLICK TO VERIFY)"):
+        with st.spinner('Verifying secure payment...'):
+            time.sleep(2)
+        st.session_state.authenticated = True
         st.rerun()
 else:
+    # SUCCESS STATE
     st.balloons()
-    st.success("Access Granted!")
-    videos = [f for f in all_files if f.lower().endswith('.mp4')]
-    if videos:
-        st.video(videos[0])
+    st.success("Payment Verified! Enjoy the video.")
+    
+    # YOUR ACTUAL YOUTUBE VIDEO
+    st.video("https://youtu.be/-Rkr99dnCrY?si=s-3CbRNXhY5xYdFE")
+    
+    st.markdown("### 📝 Next Steps")
+    st.write("Thanks for watching! Stay tuned for more exclusive drops from Funnyjac Tv.")
