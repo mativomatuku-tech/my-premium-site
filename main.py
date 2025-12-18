@@ -82,3 +82,13 @@ else:
     
     st.markdown("### 📝 Next Steps")
     st.write("Thanks for watching! Stay tuned for more exclusive drops from Funnyjac Tv.")
+    # --- INSTALL APP SECTION ---
+st.markdown("---")
+with st.expander("📲 Install this as an App on your Phone"):
+    st.write("To have this Masterclass on your home screen like WhatsApp:")
+    st.markdown("""
+    1. **Android:** Tap the **three dots (⋮)** in the top right of Chrome and select **'Add to Home Screen'**.
+    2. **iPhone:** Tap the **Share icon** (square with an arrow) and select **'Add to Home Screen'**.
+    """)
+    st.info("Your logo will appear on your phone just like a regular app! 🚀")
+
