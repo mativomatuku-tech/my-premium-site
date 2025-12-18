@@ -1,94 +1,95 @@
 import streamlit as st
 import time
-import os
 
-# 1. Professional Page Config
-st.set_page_config(page_title="VIP Access Portal", page_icon="💎", layout="centered")
+# 1. SET THE PROFESSIONAL DARK THEME & LOGO
+st.set_page_config(
+    page_title="Premium Masterclass",
+    page_icon="💎",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-# 2. Professional CSS (Dark Mode + Logo Pop-up)
+# Custom CSS for Dark Mode & Button Styling
 st.markdown("""
     <style>
-    /* Sleek Dark Mode Background */
-    .stApp {
-        background-color: #0e1117;
-        color: #ffffff;
-    }
-    
-    /* Logo Pop-up Animation */
-    @keyframes popup {
-        0% { transform: scale(0.5); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-    .logo-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-        animation: popup 0.8s ease-out;
-    }
-    
-    /* Premium Button Style */
+    .stApp { background-color: #0E1117; color: white; }
     div.stButton > button:first-child {
-        background: linear-gradient(45deg, #FF4B2B, #FF416C);
-        color: white;
-        border-radius: 30px;
-        width: 100%;
-        height: 3.5em;
-        font-weight: bold;
-        font-size: 20px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
-        transition: all 0.3s ease;
-    }
-    div.stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
+        background-color: #FFC439; color: black; border-radius: 20px; font-weight: bold; width: 100%;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Logo Display (Pop-up effect)
-st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-files = os.listdir('.')
-images = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-if images:
-    # This automatically finds your logo file in the repository
-    st.image(images[0], width=180)
-st.markdown('</div>', unsafe_allow_html=True)
+# 2. THE LOGO POP-UP (PROFESSIONAL ENTRANCE)
+if 'logo_shown' not in st.session_state:
+    placeholder = st.empty()
+    with placeholder.container():
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        # Assuming your logo file is named logo.png in GitHub
+        try:
+            st.image("logo.png", width=200)
+        except:
+            st.header("💎 MATIVO MASTERCLASS")
+        st.subheader("Unlocking Standard Size...")
+        progress_bar = st.progress(0)
+        for percent_complete in range(100):
+            time.sleep(0.01)
+            progress_bar.progress(percent_complete + 1)
+    placeholder.empty()
+    st.session_state['logo_shown'] = True
 
-# 4. Title and Content
-st.markdown("<h1 style='text-align: center; color: white;'>👑 PREMIUM MASTERCLASS</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #888;'>Secure your spot to unlock the exclusive content.</p>", unsafe_allow_html=True)
+# 3. MAIN CONTENT
+st.title("💎 Premium Masterclass Portal")
+st.write("Welcome to the inner circle. Follow the steps below to access your content.")
 
-# 5. Payment Logic
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
+# 4. PAYPAL & VERIFICATION SECTION
+with st.expander("🔐 STEP 1: Unlock Your Content", expanded=True):
+    st.write("Pay via PayPal and click verify to see the video.")
+    
+    # Replace the link below with your real PayPal link
+    paypal_url = "PASTE_YOUR_PAYPAL_LINK_HERE"
+    
+    st.markdown(f'''
+        <a href="{paypal_url}" target="_blank">
+            <button style="background-color: #FFC439; color: black; padding: 12px 24px; border: none; border-radius: 25px; cursor: pointer; width: 100%; font-weight: bold;">
+                💳 Pay with PayPal
+            </button>
+        </a>
+    ''', unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    if st.button("✅ I Have Paid - Click to Verify"):
+        st.success("Payment Verified! Unlocking your Masterclass now...")
+        st.balloons()
+        st.session_state['paid'] = True
 
-if not st.session_state.authenticated:
-    st.write("---")
-    st.link_button("🚀 UNLOCK INSTANT ACCESS - $5", "https://www.paypal.com")
+# 5. VIDEO SECTION (ONLY SHOWS AFTER VERIFICATION)
+if st.session_state.get('paid'):
+    st.markdown("---")
+    st.subheader("📺 Your Masterclass Video")
+    # Replace with your actual YouTube link
+    st.video("https://www.youtube.com/watch?v=YOUR_VIDEO_ID")
     
-    if st.button("✅ I HAVE PAID (CLICK TO VERIFY)"):
-        with st.spinner('Verifying secure payment...'):
-            time.sleep(2)
-        st.session_state.authenticated = True
-        st.rerun()
-else:
-    # SUCCESS STATE
-    st.balloons()
-    st.success("Payment Verified! Enjoy the video.")
-    
-    # YOUR ACTUAL YOUTUBE VIDEO
-    st.video("https://youtu.be/-Rkr99dnCrY?si=s-3CbRNXhY5xYdFE")
-    
-    st.markdown("### 📝 Next Steps")
-    st.write("Thanks for watching! Stay tuned for more exclusive drops from Funnyjac Tv.")
-    # --- INSTALL APP SECTION ---
-st.markdown("---")
+    # PDF DOWNLOAD BUTTON
+    try:
+        with open("workbook.pdf", "rb") as file:
+            st.download_button(
+                label="📄 Download Masterclass Workbook (PDF)",
+                data=file,
+                file_name="Masterclass_Workbook.pdf",
+                mime="application/pdf"
+            )
+    except FileNotFoundError:
+        st.warning("Note: Upload 'workbook.pdf' to GitHub to enable the download button.")
+
+# 6. INSTALL AS APP SECTION
+st.markdown("<br><br>", unsafe_allow_html=True)
 with st.expander("📲 Install this as an App on your Phone"):
-    st.write("To have this Masterclass on your home screen like WhatsApp:")
+    st.write("To keep this on your home screen like WhatsApp:")
     st.markdown("""
-    1. **Android:** Tap the **three dots (⋮)** in the top right of Chrome and select **'Add to Home Screen'**.
-    2. **iPhone:** Tap the **Share icon** (square with an arrow) and select **'Add to Home Screen'**.
+    1. **Android:** Tap the **3 dots (⋮)** in Chrome and select **'Add to Home Screen'**.
+    2. **iPhone:** Tap the **Share icon** and select **'Add to Home Screen'**.
     """)
-    st.info("Your logo will appear on your phone just like a regular app! 🚀")
+    st.info("Your logo will now appear on your home screen! 🚀")
 
+st.markdown("<p style='text-align: center; color: grey;'>© 2025 Mativo Masterclass Premium</p>", unsafe_allow_html=True)
